@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perlys Piamo (Blog)</title>
+    <style>
+        /* Variáveis de cores para os Temas Claro e Escuro (Tons de Vermelho e Rosa) */
+        :root {
+            --bg-body: #fff5f6;
+            --bg-container: #ffffff;
+            --bg-header: #ffccd5;
+            --text-main: #4a151b;
+            --text-header: #a4133c;
+            --text-muted: #805b5e;
+            --border-color: #ff4d6d;
+            --shadow-color: rgba(164, 19, 60, 0.08);
+            --button-bg: #ffe5ec;
+            --button-hover: #ffccd5;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1a080a;
+            --bg-container: #2d1215;
+            --bg-header: #4c111a;
+            --text-main: #ffe5ec;
+            --text-header: #ff8fa3;
+            --text-muted: #c9a2a6;
+            --border-color: #ff758f;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --button-bg: #5c1321;
+            --button-hover: #800f2f;
+        }
+
+        /* Configurações Gerais - Ocupando a tela toda */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Barra de Acessibilidade */
+        .top-bar {
+            width: 100%;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-sizing: border-box;
+            background-color: rgba(255, 77, 109, 0.05);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .theme-toggle {
+            background-color: var(--button-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--button-hover);
+        }
+
+        /* Cabeçalho estendido de ponta a ponta */
+        header {
+            background-color: var(--bg-header);
+            color: var(--text-header);
+            text-align: center;
+            width: 100%;
+            padding: 40px 24px;
+            border-bottom: 3px solid var(--border-color);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Container Principal sem margens laterais fixas rígidas */
+        .blog-container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            gap: 24px;
+        }
+
+        /* Seção Sobre integrada horizontalmente para preencher espaço */
+        aside {
+            background-color: var(--bg-container);
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            border: 2px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .aside-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        aside h3 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 6px;
+            font-size: 1.2rem;
+        }
+
+        /* Organização em GRID dos posts (Preenche todo o espaço) */
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Artigos transformados em Blocos/Cards compactos */
+        article {
+            background-color: var(--bg-container);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .post-header-box {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Imagens adaptáveis à largura do card */
+        img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            flex: 1;
+        }
+
+        article h2 {
+            font-size: 1.4rem;
+            margin: 8px 0;
+            color: var(--text-main);
+        }
+
+        .artigo-autor {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0 0 12px 0;
+        }
+
+        .post-content p:not(.artigo-autor) {
+            margin: 0 0 16px 0;
+            font-size: 1rem;
+        }
+
+        /* Botões de Reação alinhados na base do card */
+        .reactions {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .reactions button {
+            background-color: var(--button-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .reactions button:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.03);
+        }
+
+        /* Seção de Comentários embutida no card */
+        .comments-section {
+            background: rgba(255, 77, 109, 0.02);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .comments-list {
+            margin-bottom: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .comment-item {
+            font-size: 0.9rem;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .comment-form input, .comment-form textarea {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .comment-form button {
+            align-self: flex-end;
+            background-color: var(--bg-header);
+            color: var(--text-header);
+            border: 1px solid var(--border-color);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="theme-toggle" id="toggleTheme" aria-label="Alternar modo escuro e claro">🌓 Modo Escuro</button>
+    </div>
+
+    <header>
+        <h1>Perlys Piamo</h1>
+        <p>Inspirações, truques de organização, desenhos e projetos DIY</p>
+    </header>
+
+    <div class="blog-container">
+        <aside>
+            <div class="aside-section">
+                <h3>Sobre o Blog</h3>
+                <p>Seja muito bem-vindo ao <strong>Perlys Piamo</strong>! Este espaço foi criado especialmente para reunir os apaixonados por DIY, técnicas de desenho e ideias criativas.</p>
+            </div>
+            <div class="aside-section">
+                <h3>Autoria</h3>
+                <p style="font-weight: bold; margin-bottom: 5px;">Perlys Piamo</p>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0;">Criadora de conteúdo, colecionadora de cadernos e artesã nas horas vagas.</p>
+            </div>
+        </aside>
+
+        <main>
+            <article>
+                <div class="post-header-box">
+                    <img src="imagem1-blog.png" alt="Mesa de estudos organizada.">
+                    <div class="post-content">
+                        <h2>Bem-vindos ao meu espaço criativo!</h2>
+                        <p class="artigo-autor">Por: Perlys Piamo</p>
+                        <p>Seja muito bem-vindo ao meu novo blog! Aqui é o lugar perfeito para quem ama cadernos novos, canetas coloridas e processos artísticos.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="reactions">
+                        <button class="like-btn">❤️ <span>0</span></button>
+                        <button class="like-btn">👍 <span>0</span></button>
+                        <button class="like-btn">👎 <span>0</span></button>
+                        <button class="toggle-comments-btn">💬 (<span class="comment-count">0</span>)</button>
+                    </div>
+                    <div class="comments-section" style="display: none;">
+                        <div class="comments-list"></div>
+                        <form class="comment-form" onsubmit="adicionarComentario(event, this)">
+                            <input type="text" placeholder="Nome..." required>
+                            <textarea placeholder="Comentário..." rows="2" required></textarea>
+                            <button type="submit">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <div class="post-header-box">
+                    <img src="imagem2-blog.png" alt="Página de Bullet Journal.">
+                    <div class="post-content">
+                        <h2>Como começar um Bullet Journal sem pressão</h2>
+                        <p class="artigo-autor">Por: Perlys Piamo</p>
+                        <p>O Bullet Journal é uma mistura de agenda e diário. Não se assuste com padrões das redes sociais! Use folhas simples e cores para destacar tarefas.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="reactions">
+                        <button class="like-btn">❤️ <span>0</span></button>
+                        <button class="like-btn">👍 <span>0</span></button>
+                        <button class="like-btn">👎 <span>0</span></button>
+                        <button class="toggle-comments-btn">💬 (<span class="comment-count">0</span>)</button>
+                    </div>
+                    <div class="comments-section" style="display: none;">
+                        <div class="comments-list"></div>
+                        <form class="comment-form" onsubmit="adicionarComentario(event, this)">
+                            <input type="text" placeholder="Nome..." required>
+                            <textarea placeholder="Comentário..." rows="2" required></textarea>
+                            <button type="submit">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <div class="post-header-box">
+                    <img src="imagem3-blog.png" alt="Pintura em aquarela.">
+                    <div class="post-content">
+                        <h2>Dicas essenciais para aquarela em nível iniciante</h2>
+                        <p class="artigo-autor">Por: Perlys Piamo</p>
+                        <p>A pintura em aquarela é mágica. Minha dica principal: compre papéis com gramatura de 300g/m² para segurar a água sem enrugar.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="reactions">
+                        <button class="like-btn">❤️ <span>0</span></button>
+                        <button class="like-btn">👍 <span>0</span></button>
+                        <button class="like-btn">👎 <span>0</span></button>
+                        <button class="toggle-comments-btn">💬 (<span class="comment-count">0</span>)</button>
+                    </div>
+                    <div class="comments-section" style="display: none;">
+                        <div class="comments-list"></div>
+                        <form class="comment-form" onsubmit="adicionarComentario(event, this)">
+                            <input type="text" placeholder="Nome..." required>
+                            <textarea placeholder="Comentário..." rows="2" required></textarea>
+                            <button type="submit">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <div class="post-header-box">
+                    <img src="imagem4-blog.png" alt="Organizadores reciclados.">
+                    <div class="post-content">
+                        <h2>Manualidades rápidas para transformar seu quarto</h2>
+                        <p class="artigo-autor">Por: Perlys Piamo</p>
+                        <p>Recicle potes de vidro antigos aplicando tintas spray rosa ou vermelha. Eles servem como ótimos porta-pincéis decorativos na escrivaninha.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="reactions">
+                        <button class="like-btn">❤️ <span>0</span></button>
+                        <button class="like-btn">👍 <span>0</span></button>
+                        <button class="like-btn">👎 <span>0</span></button>
+                        <button class="toggle-comments-btn">💬 (<span class="comment-count">0</span>)</button>
+                    </div>
+                    <div class="comments-section" style="display: none;">
+                        <div class="comments-list"></div>
+                        <form class="comment-form" onsubmit="adicionarComentario(event, this)">
+                            <input type="text" placeholder="Nome..." required>
+                            <textarea placeholder="Comentário..." rows="2" required></textarea>
+                            <button type="submit">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        // Lógica dos botões de curtir
+        const botoesCurtir = document.querySelectorAll(".like-btn");
+        botoesCurtir.forEach(function(botao){
+            let curtiu = false;
+            botao.addEventListener("click", function(){
+                let texto = botao.querySelector("span");
+                if (curtiu === false){
+                    texto.textContent++;
+                    curtiu = true;
+                } else {
+                    texto.textContent--;
+                    curtiu = false;
+                }
+            });
+        });
+
+        // Lógica para exibir/ocultar a caixa de comentários
+        const botoesComentario = document.querySelectorAll(".toggle-comments-btn");
+        botoesComentario.forEach(function(botao) {
+            botao.addEventListener("click", function() {
+                const artigo = botao.closest("article");
+                const caixaComentarios = artigo.querySelector(".comments-section");
+                
+                if (caixaComentarios.style.display === "none") {
+                    caixaComentarios.style.display = "block";
+                } else {
+                    caixaComentarios.style.display = "none";
+                }
+            });
+        });
+
+        // Função executada quando o usuário envia um comentário
+        function adicionarComentario(event, formulario) {
+            event.preventDefault(); 
+            const inputs = formulario.querySelectorAll("input, textarea");
+            const nome = inputs[0].value;
+            const texto = inputs[1].value;
+
+            const artigo = formulario.closest("article");
+            const listaComentarios = artigo.querySelector(".comments-list");
+            const contadorTexto = artigo.querySelector(".comment-count");
+
+            const novoComentario = document.createElement("div");
+            novoComentario.classList.add("comment-item");
+            novoComentario.innerHTML = `<strong>${nome}:</strong> <span>${texto}</span>`;
+
+            listaComentarios.appendChild(novoComentario);
+            contadorTexto.textContent = parseInt(contadorTexto.textContent) + 1;
+            formulario.reset();
+        }
+
+        // Lógica para alternar o modo claro e escuro
+        const toggleBtn = document.getElementById("toggleTheme");
+        toggleBtn.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            if (currentTheme === "dark") {
+                document.documentElement.removeAttribute("data-theme");
+                toggleBtn.textContent = "🌓 Modo Escuro";
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                toggleBtn.textContent = "☀️ Modo Claro";
+            }
+        });
+    </script>
+</body>
+</html>
